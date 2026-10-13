@@ -1,0 +1,39 @@
+<link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+<link rel="icon" type="image/png" sizes="64x64" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<style>
+  .reveal-viewport {
+    background:
+      radial-gradient(circle at 100% 100%, #e8afc0 0 13%, transparent 13.2%),
+      radial-gradient(circle at 93% 112%, #a152a8 0 11%, transparent 11.2%),
+      #f8f0f8 !important;
+  }
+  .reveal section#title-slide::before {
+    content: ""; display: block; width: 120px; height: 120px; margin-bottom: 28px;
+    background: url("img/wids-logo.png") center / contain no-repeat;
+  }
+</style>
+<script>
+(function () {
+  function restart(el) { el.classList.remove('play'); void el.offsetWidth; el.classList.add('play'); }
+  window.qReplay = function (btn) {
+    var s = btn.closest('section');
+    s.querySelectorAll('.anim').forEach(restart);
+  };
+  function sync() {
+    document.querySelectorAll('.anim').forEach(function (a) { a.classList.remove('play'); });
+    var cur = Reveal.getCurrentSlide();
+    if (cur) cur.querySelectorAll('.anim').forEach(restart);
+  }
+  var lt;
+  function relayout() { clearTimeout(lt); lt = setTimeout(function () { try { Reveal.layout(); } catch (e) {} }, 150); }
+  document.addEventListener('toggle', relayout, true);
+  window.addEventListener('load', function () {
+    try { Reveal.on('slidechanged', function (e) { sync(); relayout(); }); Reveal.on('ready', sync); sync(); } catch (e) {}
+    try {
+      var root = document.querySelector('.reveal .slides');
+      new MutationObserver(relayout).observe(root, { childList: true, subtree: true, characterData: true });
+    } catch (e) {}
+  });
+})();
+</script>
